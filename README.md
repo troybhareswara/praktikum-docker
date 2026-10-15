@@ -11,7 +11,7 @@ Screenshot dan analisis setiap tahap akan didokumentasikan di folder `docs/scree
 
 ## Tahap Praktikum
 
-- [ ] Tahap 1 — Menjalankan aplikasi tanpa Docker
+- [x] Tahap 1 — Menjalankan aplikasi tanpa Docker
 - [ ] Tahap 2 — Docker single-stage
 - [ ] Tahap 3 — Docker multi-stage
 - [ ] Tahap 4 — Docker Compose dan persistensi
