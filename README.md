@@ -5,7 +5,7 @@
 -   **Kelas / Prodi**: S1 Teknologi Informasi -- UNDIKNAS Denpasar
 -   **Mata Kuliah**: DevOps (MK40)
 -   **Branch GitHub**: `lab1-2/42430052-troy`
--   **Tautan Branch / Pull Request GitHub**: *https://github.com/troybhareswara/praktikum-docker.git*
+-   **Tautan Branch / Pull Request GitHub**: *https://github.com/troybhareswara/praktikum-docker/tree/lab1-2/42430052-troy*
 -   **Nama Rekan Peer-Reviewer**: *Isi nama dan NIM rekan yang melakukan
     review*
 
