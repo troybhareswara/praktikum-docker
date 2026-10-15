@@ -6,16 +6,16 @@ services:
     container_name: mk40-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: devops_user
-      POSTGRES_PASSWORD: devops_secret
-      POSTGRES_DB: devops_inventory
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       # Named volume 'pgdata' menjamin data tidak hilang saat container dihapus!
       - pgdata:/var/lib/postgresql/data
       # Menjalankan init.sql secara otomatis saat database pertama kali dibuat
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
-      - app-bridge-net
+      - backend-net
     # KEAMANAN PENTING: Tidak ada 'ports:' di sini agar Database TIDAK bisa diakses langsung dari luar!
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U devops_user -d devops_inventory"]
@@ -33,19 +33,26 @@ services:
     restart: unless-stopped
     environment:
       APP_PORT: "8080"
-      STUDENT_NIM: "42430052"
-      STUDENT_NAME: "Gede Troy Wiswama Bhareswara"
-      STORAGE_MODE: "postgres"      # Mengaktifkan mode penyimpanan ke Database PostgreSQL
-      DB_HOST: "db"                  # Memanggil kontainer database cukup dengan nama layanannya ('db')
+      STUDENT_NIM: ${STUDENT_NIM}
+      STUDENT_NAME: ${STUDENT_NAME}
+      STORAGE_MODE: "postgres"
+      DB_HOST: "db"
       DB_PORT: "5432"
-      DB_USER: "devops_user"
-      DB_PASSWORD: "devops_secret"
-      DB_NAME: "devops_inventory"
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
     depends_on:
       db:
         condition: service_healthy   # Tunggu sampai PostgreSQL benar-benar siap menerima koneksi
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
     networks:
-      - app-bridge-net
+      - frontend-net
+      - backend-net
 
   # 3. LAYANAN FRONTEND WEB (Satu-satunya pintu masuk dari browser pengguna)
   frontend:
@@ -60,7 +67,7 @@ services:
     depends_on:
       - backend
     networks:
-      - app-bridge-net
+      - frontend-net
 
   # Deklarasi Penyimpanan Persisten (Named Volume)
 volumes:
@@ -69,7 +76,10 @@ volumes:
 
   # Deklarasi Jaringan Internal Khusus (Custom Bridge Network)
 networks:
-  app-bridge-net:
-    name: mk40_bridge_network
+  frontend-net:
+    name: mk40_frontend_network
+    driver: bridge
+  backend-net:
+    name: mk40_backend_network
     driver: bridge
 
