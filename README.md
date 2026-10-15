@@ -13,7 +13,7 @@ Screenshot dan analisis setiap tahap akan didokumentasikan di folder `docs/scree
 
 - [x] Tahap 1 — Menjalankan aplikasi tanpa Docker
 - [x] Tahap 2 — Docker single-stage
-- [ ] Tahap 3 — Docker multi-stage
+- [x] Tahap 3 — Docker multi-stage
 - [ ] Tahap 4 — Docker Compose dan persistensi
 - [ ] Tahap 5 — Troubleshooting
 - [ ] Tantangan mandiri
