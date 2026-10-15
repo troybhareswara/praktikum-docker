@@ -1,0 +1,18 @@
+
+# 1. Base image dengan compiler Go
+FROM golang:1.22-bookworm
+
+# 2. Folder kerja di dalam container
+WORKDIR /app
+
+# 3. Salin file dari direktori backend
+COPY . .
+
+# 4. Kompilasi aplikasi
+RUN go build -o server-app main.go
+
+# 5. Dokumentasikan port aplikasi
+EXPOSE 8080
+
+# 6. Jalankan aplikasi
+CMD ["./server-app"]
