@@ -1,0 +1,85 @@
+
+services:
+  # 1. LAYANAN DATABASE POSTGRESQL
+  db:
+    image: postgres:16-alpine
+    container_name: mk40-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      # Named volume 'pgdata' menjamin data tidak hilang saat container dihapus!
+      - pgdata:/var/lib/postgresql/data
+      # Menjalankan init.sql secara otomatis saat database pertama kali dibuat
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - backend-net
+    # KEAMANAN PENTING: Tidak ada 'ports:' di sini agar Database TIDAK bisa diakses langsung dari luar!
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devops_user -d devops_inventory"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # 2. LAYANAN BACKEND API (Menggunakan Multi-Stage Dockerfile dari Tahap 3)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: backend-api:v1.0.0
+    container_name: mk40-backend
+    restart: unless-stopped
+    environment:
+      APP_PORT: "8080"
+      STUDENT_NIM: ${STUDENT_NIM}
+      STUDENT_NAME: ${STUDENT_NAME}
+      STORAGE_MODE: "postgres"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+    depends_on:
+      db:
+        condition: service_healthy   # Tunggu sampai PostgreSQL benar-benar siap menerima koneksi
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - frontend-net
+      - backend-net
+
+  # 3. LAYANAN FRONTEND WEB (Satu-satunya pintu masuk dari browser pengguna)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: frontend-web:v1.0.0
+    container_name: mk40-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"                      # Membuka port 8080 di laptop ke port 80 Nginx
+    depends_on:
+      - backend
+    networks:
+      - frontend-net
+
+  # Deklarasi Penyimpanan Persisten (Named Volume)
+volumes:
+  pgdata:
+    name: mk40_pgdata_volume
+
+  # Deklarasi Jaringan Internal Khusus (Custom Bridge Network)
+networks:
+  frontend-net:
+    name: mk40_frontend_network
+    driver: bridge
+  backend-net:
+    name: mk40_backend_network
+    driver: bridge
+
