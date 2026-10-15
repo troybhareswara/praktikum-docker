@@ -7,7 +7,7 @@
 - **Branch GitHub:** `lab1-2/42430052-troy`
 - **Repository:** [praktikum-docker](https://github.com/troybhareswara/praktikum-docker)
 - **Tautan branch:** [lab1-2/42430052-troy](https://github.com/troybhareswara/praktikum-docker/tree/lab1-2/42430052-troy)
-- **Peer-reviewer:** Belum dilakukan; akan dilengkapi setelah review bersama rekan.
+- **Peer-reviewer:** [bliDedok] https://github.com/bliDedok
 
 ---
 
@@ -117,11 +117,8 @@ Setelah ketiga bagian tantangan diterapkan, layanan Docker Compose berhasil berj
 
 ## 4. Bukti Audit Silang (Peer-Review) di GitHub
 
-- **Tautan Pull Request (PR):** Belum tersedia; akan dilengkapi setelah proses peer-review.
-- **Nama dan NIM peer-reviewer:** Belum dilakukan; akan diisi setelah review bersama rekan.
-- **Ringkasan catatan peer-review:** Belum tersedia.
-
-Bagian ini sengaja belum diisi karena review bersama rekan belum dilaksanakan. Setelah sesi peer-review selesai, tambahkan tautan PR, identitas reviewer, dan ringkasan masukan atau perbaikan yang benar-benar diberikan.
+- **Tautan Pull Request (PR):** https://github.com/troybhareswara/praktikum-docker/pull/1
+- **Nama dan NIM peer-reviewer:** I Made Dedy Wanditya / 42430042
 
 ---
 
