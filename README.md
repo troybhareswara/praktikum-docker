@@ -1,5 +1,6 @@
 # Laporan Praktikum Modul 1 (Pertemuan 4): Kontainerisasi Docker & Orkestrasi Multi-Tier (Lab 1 & Lab 2)
 
+<<<<<<< HEAD
 -   **Nama Mahasiswa:** Gede Troy Wiswama Bhareswara
 -   **NIM:** 42430052
 -   **Kelas / Prodi:** S1 Teknologi Informasi --- Universitas Pendidikan
@@ -10,6 +11,16 @@
     [praktikum-docker](https://github.com/troybhareswara/praktikum-docker.git)
 -   **Nama Rekan Peer-Reviewer:** Belum dilakukan; akan dilengkapi
     setelah sesi peer-review bersama rekan.
+=======
+-   **Nama Mahasiswa**: Gede Troy Wiswama Bhareswara
+-   **NIM**: 42430052
+-   **Kelas / Prodi**: S1 Teknologi Informasi -- UNDIKNAS Denpasar
+-   **Mata Kuliah**: DevOps (MK40)
+-   **Branch GitHub**: `lab1-2/42430052-troy`
+-   **Tautan Branch / Pull Request GitHub**: *https://github.com/troybhareswara/praktikum-docker/tree/lab1-2/42430052-troy*
+-   **Nama Rekan Peer-Reviewer**: *Isi nama dan NIM rekan yang melakukan
+    review*
+>>>>>>> 921b486ec871de94175b7c0a0130a162958392e3
 
 ------------------------------------------------------------------------
 
