@@ -1,0 +1,75 @@
+
+services:
+  # 1. LAYANAN DATABASE POSTGRESQL
+  db:
+    image: postgres:16-alpine
+    container_name: mk40-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: devops_user
+      POSTGRES_PASSWORD: devops_secret
+      POSTGRES_DB: devops_inventory
+    volumes:
+      # Named volume 'pgdata' menjamin data tidak hilang saat container dihapus!
+      - pgdata:/var/lib/postgresql/data
+      # Menjalankan init.sql secara otomatis saat database pertama kali dibuat
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - app-bridge-net
+    # KEAMANAN PENTING: Tidak ada 'ports:' di sini agar Database TIDAK bisa diakses langsung dari luar!
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devops_user -d devops_inventory"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # 2. LAYANAN BACKEND API (Menggunakan Multi-Stage Dockerfile dari Tahap 3)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: backend-api:v1.0.0
+    container_name: mk40-backend
+    restart: unless-stopped
+    environment:
+      APP_PORT: "8080"
+      STUDENT_NIM: "42430052"
+      STUDENT_NAME: "Gede Troy Wiswama Bhareswara"
+      STORAGE_MODE: "postgres"      # Mengaktifkan mode penyimpanan ke Database PostgreSQL
+      DB_HOST: "db"                  # Memanggil kontainer database cukup dengan nama layanannya ('db')
+      DB_PORT: "5432"
+      DB_USER: "devops_user"
+      DB_PASSWORD: "devops_secret"
+      DB_NAME: "devops_inventory"
+    depends_on:
+      db:
+        condition: service_healthy   # Tunggu sampai PostgreSQL benar-benar siap menerima koneksi
+    networks:
+      - app-bridge-net
+
+  # 3. LAYANAN FRONTEND WEB (Satu-satunya pintu masuk dari browser pengguna)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: frontend-web:v1.0.0
+    container_name: mk40-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"                      # Membuka port 8080 di laptop ke port 80 Nginx
+    depends_on:
+      - backend
+    networks:
+      - app-bridge-net
+
+  # Deklarasi Penyimpanan Persisten (Named Volume)
+volumes:
+  pgdata:
+    name: mk40_pgdata_volume
+
+  # Deklarasi Jaringan Internal Khusus (Custom Bridge Network)
+networks:
+  app-bridge-net:
+    name: mk40_bridge_network
+    driver: bridge
+
